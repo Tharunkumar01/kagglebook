@@ -38,8 +38,8 @@ print(confusion_matrix1)
 # array([[3, 1],
 #        [2, 2]])
 
-# Can also be created using scikit-learn's metrics module confusion_matrix function, 
-# but care must be taken as the arrangement of the confusion matrix elements is different
+# Can also be created using confusion_matrix() from scikit-learn's metrics, but
+# beware that the arrangement of the confusion matrix elements may be different
 confusion_matrix2 = confusion_matrix(y_true, y_pred)
 print(confusion_matrix2)
 # array([[2, 1],
@@ -71,7 +71,7 @@ print(logloss)
 # 0.7136
 
 # -----------------------------------
-# Multiclass classification
+# Multi-class classification
 # -----------------------------------
 # multi-class logloss
 
@@ -95,7 +95,7 @@ print(logloss)
 
 from sklearn.metrics import f1_score
 
-# For calculating performance metrics in multi-label classification, it is easier to handle the true / predicted values as binary matrices of record x class
+# For calculating performance metric of multi-label classification, it is easier to handle the true / predicted values as binary matrices of record x class
 # True values - [[1,2], [1], [1,2,3], [2,3], [3]]
 y_true = np.array([[1, 1, 0],
                    [1, 0, 0],
