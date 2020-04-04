@@ -4,8 +4,8 @@
 import numpy as np
 import pandas as pd
 
-# train_x is the training data, with train_y target values, and test_x is the test data
-# Saving in pandas DataFrame and Series objects. (Also possible to use numpy arrays)
+# train_x is the training data, train_y is the target values, and test_x is the test data
+# stored in pandas DataFrames and Series (also possible to use numpy arrays)
 
 train = pd.read_csv('../input/sample-data/train_preprocessed_onehot.csv')
 train_x = train.drop(['target'], axis=1)
