@@ -21,7 +21,7 @@ tr_x, va_x = train_x.iloc[tr_idx], train_x.iloc[va_idx]
 tr_y, va_y = train_y.iloc[tr_idx], train_y.iloc[va_idx]
 
 # -----------------------------------
-# Implement xgboost
+# xgboost implementation
 # -----------------------------------
 import xgboost as xgb
 from sklearn.metrics import log_loss
