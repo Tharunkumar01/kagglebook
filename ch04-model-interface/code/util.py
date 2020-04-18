@@ -36,7 +36,7 @@ class Logger:
             self.result_logger.setLevel(logging.INFO)
 
     def info(self, message):
-        # 時刻をつけてコンソールとログに出力
+        # Output time to console and log
         self.general_logger.info('[{}] - {}'.format(self.now_string(), message))
 
     def result(self, message):
@@ -46,7 +46,7 @@ class Logger:
         self.result(self.to_ltsv(dic))
 
     def result_scores(self, run_name, scores):
-        # 計算結果をコンソールと計算結果用ログに出力
+        # Output calculation results to console and results log
         dic = dict()
         dic['name'] = run_name
         dic['score'] = np.mean(scores)

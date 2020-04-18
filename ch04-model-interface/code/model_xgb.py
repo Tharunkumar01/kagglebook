@@ -12,17 +12,17 @@ class ModelXGB(Model):
 
     def train(self, tr_x, tr_y, va_x=None, va_y=None):
 
-        # データのセット
+        # Set the data
         validation = va_x is not None
         dtrain = xgb.DMatrix(tr_x, label=tr_y)
         if validation:
             dvalid = xgb.DMatrix(va_x, label=va_y)
 
-        # ハイパーパラメータの設定
+        # Set the hyperparameters
         params = dict(self.params)
         num_round = params.pop('num_round')
 
-        # 学習
+        # Train
         if validation:
             early_stopping_rounds = params.pop('early_stopping_rounds')
             watchlist = [(dtrain, 'train'), (dvalid, 'eval')]
@@ -39,7 +39,7 @@ class ModelXGB(Model):
     def save_model(self):
         model_path = os.path.join('../model/model', f'{self.run_fold_name}.model')
         os.makedirs(os.path.dirname(model_path), exist_ok=True)
-        # best_ntree_limitが消えるのを防ぐため、pickleで保存することとした
+        # To prevent loss of best_ntree_limit model, save model using pickle
         Util.dump(self.model, model_path)
 
     def load_model(self):

@@ -13,7 +13,7 @@ from sklearn.preprocessing import StandardScaler
 from model import Model
 from util import Util
 
-# tensorflowの警告抑制
+# Supress tensorflow warnings
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 import tensorflow as tf
@@ -24,7 +24,7 @@ class ModelNN(Model):
 
     def train(self, tr_x, tr_y, va_x=None, va_y=None):
 
-        # データのセット・スケーリング
+        # Set and scale data
         validation = va_x is not None
         scaler = StandardScaler()
         scaler.fit(tr_x)
@@ -35,7 +35,7 @@ class ModelNN(Model):
             va_x = scaler.transform(va_x)
             va_y = np_utils.to_categorical(va_y, num_classes=9)
 
-        # パラメータ
+        # Parameters
         nb_classes = 9
         layers = self.params['layers']
         dropout = self.params['dropout']
@@ -43,7 +43,7 @@ class ModelNN(Model):
         nb_epoch = self.params['nb_epoch']
         patience = self.params['patience']
 
-        # モデルの構築
+        # Construct model
         model = Sequential()
         model.add(Dense(units, input_shape=(tr_x.shape[1],)))
         model.add(PReLU())
@@ -68,7 +68,7 @@ class ModelNN(Model):
         else:
             model.fit(tr_x, tr_y, nb_epoch=nb_epoch, batch_size=128, verbose=2)
 
-        # モデル・スケーラーの保持
+        # Retain model and scaler
         self.model = model
         self.scaler = scaler
 

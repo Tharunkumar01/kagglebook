@@ -7,10 +7,10 @@ from typing import Optional
 class Model(metaclass=ABCMeta):
 
     def __init__(self, run_fold_name: str, params: dict) -> None:
-        """コンストラクタ
+        """Constructor
 
-        :param run_fold_name: ランの名前とfoldの番号を組み合わせた名前
-        :param params: ハイパーパラメータ
+        :param run_fold_name: concatenation of run name and fold number
+        :param params: hyperparameters
         """
         self.run_fold_name = run_fold_name
         self.params = params
@@ -20,30 +20,30 @@ class Model(metaclass=ABCMeta):
     def train(self, tr_x: pd.DataFrame, tr_y: pd.Series,
               va_x: Optional[pd.DataFrame] = None,
               va_y: Optional[pd.Series] = None) -> None:
-        """モデルの学習を行い、学習済のモデルを保存する
+        """Perform model training and save trained model
 
-        :param tr_x: 学習データの特徴量
-        :param tr_y: 学習データの目的変数
-        :param va_x: バリデーションデータの特徴量
-        :param va_y: バリデーションデータの目的変数
+        :param tr_x: Training data features
+        :param tr_y: Training data target values
+        :param va_x: Validation data features
+        :param va_y: Validation data target values
         """
         pass
 
     @abstractmethod
     def predict(self, te_x: pd.DataFrame) -> np.array:
-        """学習済のモデルでの予測値を返す
+        """Return predictions from trained model
 
-        :param te_x: バリデーションデータやテストデータの特徴量
-        :return: 予測値
+        :param te_x: Validation data or test data features
+        :return: Predictions
         """
         pass
 
     @abstractmethod
     def save_model(self) -> None:
-        """モデルの保存を行う"""
+        """Save the model """
         pass
 
     @abstractmethod
     def load_model(self) -> None:
-        """モデルの読み込みを行う"""
+        """Load the model """
         pass
