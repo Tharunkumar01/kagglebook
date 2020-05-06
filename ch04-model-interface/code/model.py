@@ -45,5 +45,5 @@ class Model(metaclass=ABCMeta):
 
     @abstractmethod
     def load_model(self) -> None:
-        """Load the model """
+        """Load the model"""
         pass
