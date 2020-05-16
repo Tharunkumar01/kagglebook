@@ -1,18 +1,18 @@
 # ---------------------------------
-# データ等の準備
+# Prepare the data etc.
 # ----------------------------------
 import numpy as np
 import pandas as pd
 
-# train_xは学習データ、train_yは目的変数、test_xはテストデータ
-# pandasのDataFrame, Seriesで保持します。（numpyのarrayで保持することもあります）
+# train_x is the training data, train_y is the target values, and test_x is the test data
+# stored in pandas DataFrames and Series (numpy arrays also used as well)
 
 train = pd.read_csv('../input/sample-data/train_preprocessed.csv')
 train_x = train.drop(['target'], axis=1)
 train_y = train['target']
 test_x = pd.read_csv('../input/sample-data/test_preprocessed.csv')
 
-# 学習データを学習データとバリデーションデータに分ける
+# Split training data into training and validation data
 from sklearn.model_selection import KFold
 
 kf = KFold(n_splits=4, shuffle=True, random_state=71)
@@ -20,7 +20,7 @@ tr_idx, va_idx = list(kf.split(train_x))[0]
 tr_x, va_x = train_x.iloc[tr_idx], train_x.iloc[va_idx]
 tr_y, va_y = train_y.iloc[tr_idx], train_y.iloc[va_idx]
 
-# xgboostによる学習・予測を行うクラス
+# Class for training and making predictions with xgboost
 import xgboost as xgb
 
 
@@ -49,12 +49,12 @@ class Model:
 
 
 # -----------------------------------
-# 探索するパラメータの空間の指定
+# Specify the parameter space to search
 # -----------------------------------
-# hp.choiceでは、複数の選択肢から選ぶ
-# hp.uniformでは、下限・上限を指定した一様分布から抽出する。引数は下限・上限
-# hp.quniformでは、下限・上限を指定した一様分布のうち一定の間隔ごとの点から抽出する。引数は下限・上限・間隔
-# hp.loguniformでは、下限・上限を指定した対数が一様分布に従う分布から抽出する。引数は下限・上限の対数をとった値
+# hp.choice: select from multiple options
+# hp.uniform: select uniformly from distribution between minimum and maximum bounds. Arguments are minimum and maximum bounds.
+# hp.quniform: select uniformly at points at fixed intervals within minimum and maximum bounds. Arguments are minimum and maximum bounds and interval width.
+# hp.loguniform: select from distribution so logarithm of returned values is uniformaly distributed. Arguments are logarithm of minimum and maximum bounds.
 
 from hyperopt import hp
 
@@ -66,7 +66,7 @@ space = {
 }
 
 # -----------------------------------
-# hyperoptを使ったパラメータ探索
+# Parameter search using hyperopt
 # -----------------------------------
 from hyperopt import fmin, tpe, hp, STATUS_OK, Trials
 from sklearn.metrics import log_loss

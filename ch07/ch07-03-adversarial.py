@@ -1,10 +1,10 @@
 # ---------------------------------
-# データ等の準備
+# Prepare the data etc.
 # ----------------------------------
 import numpy as np
 import pandas as pd
 
-# データの作成（ランダムなデータとしています）
+# Data creation (just random data)
 rand = np.random.RandomState(71)
 train_x = pd.DataFrame(rand.uniform(0.0, 1.0, (10000, 2)), columns=['model1', 'model2'])
 adv_train = pd.Series(rand.uniform(0.0, 1.0, 10000))
