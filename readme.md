@@ -1,7 +1,7 @@
 ## Overview
 
 This is an English translation of the sample code that accompaines the bestselling Japanese Kaggle book "Data Analysis Techniques to Win Kaggle" ([amazon](https://www.amazon.co.jp/dp/4297108437)). 
-The book was written by Daisuke Kadowaki ([threecourse]https://www.kaggle.com/threecourse), Ryuji Sakata ([Jack](https://www.kaggle.com/rsakata), Keisuke Hosaka ([hskksk](https://www.kaggle.com/hskksk)) and Yuji Hiramatsu ([maxwell](https://www.kaggle.com/maxwell110)). 
+The book was written by Daisuke Kadowaki ([threecourse](https://www.kaggle.com/threecourse)), Ryuji Sakata ([Jack](https://www.kaggle.com/rsakata)), Keisuke Hosaka ([hskksk](https://www.kaggle.com/hskksk)) and Yuji Hiramatsu ([maxwell](https://www.kaggle.com/maxwell110)). 
 It was first published on 9 October 2019 in Japan by Gijutsu-Hyohron Co., Ltd (ISBN-13: 978-4297108434).
 
 Book cover:
