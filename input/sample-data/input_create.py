@@ -43,8 +43,8 @@ class Generator:
 
     def run(self):
 
-        # 被保険者の情報
-        # 年齢・体重・BMIに応じてスコアが設定されるとする
+        # Information on insured person
+        # Set score according to age, weight and BMI
         insured_age = self.r.choice(range(5, 80))
         insured_sex = self.r.choice(['Male', 'Female'], p=[0.6, 0.4])
         height = 160.0 + Util.iif(insured_sex == 'Male', 10.0, 0.0) + self.r.randn() * 8
@@ -72,9 +72,9 @@ class Generator:
         else:
             score_03 = 0.0
 
-        # 商品情報
+        # Product information
         # A1-A3, B1-B3, C1-C3, D1, E1
-        # D, E, 2の時にスコアを設定している
+        # Set scores for types D, E and 2
 
         product = self.r.choice(list('ABCDE'), p=[0.5, 0.1, 0.25, 0.1, 0.05])
         is_prodtype_1 = product in list('ABD')
@@ -97,8 +97,8 @@ class Generator:
         else:
             score_22 = 0.0
 
-        # 保険金額 - 商品タイプに応じて基本となる金額が異なる
-        # 保険金額が大きいとスコアが設定される
+        # Insurance premiums - premiums vary according to product type
+        # Set score for large premiums
         amount_raw = self.r.choice(range(1, 11))
         if is_prodtype_1:
             amount = amount_raw * 1000  * 1000
@@ -110,7 +110,7 @@ class Generator:
         else:
             score_23 = 0.0
 
-        # 申込日もスコアなし
+        # No score for application date
         date_start = pd.to_datetime('2015/1/1')
         date_end = pd.to_datetime('2016/12/31')
         days = (date_end - date_start).days
@@ -119,8 +119,8 @@ class Generator:
         app_year, app_month, app_day = app_date.year, app_date.month, app_date.day
         application_date = '{}/{}/{}'.format(app_year, app_month, app_day)
 
-        # 医療情報
-        # a1, a1とa2の差, a3が5以上でスコアが設定
+        # Medical inofrmation
+        # Set scores based on a1, difference between a1 and a2, and when a3 is greater than or equalt to 5
         # bはスコアが無い
         medical_info_a1 = int(250.0 + 100.0 * self.r.rand() + 100.0 * self.r.randn())
         medical_info_a2 = int(200.0 + 100.0 * self.r.rand() + 100.0 * self.r.randn())
@@ -153,10 +153,10 @@ class Generator:
         else:
             score_44 = 0.0
 
-        # 医療情報のバイナリ値
-        # 1-5番目はスコアと関係がある。
-        # 6-7番目は女性のみスコアと関係がある
-        # 8-10番目はスコアと関係が無い
+        # Medical information binary variable
+        # 1-5 are related with a score
+        # 6-7 are related with a score for women only
+        # 8-10 have no relation with a score
         medical_keyword_probs = np.array([
             0.8, 0.5, 0.2, 0.05, 0.02, 0.4, 0.1, 0.8, 0.3, 0.05,
         ])
