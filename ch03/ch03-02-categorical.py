@@ -1,217 +1,217 @@
 # ---------------------------------
-# データ等の準備
+# Prepare the data etc.
 # ----------------------------------
 import numpy as np
 import pandas as pd
 
-# train_xは学習データ、train_yは目的変数、test_xはテストデータ
-# pandasのDataFrame, Seriesで保持します。（numpyのarrayで保持することもあります）
+# train_x is the training data, train_y contains the target values, test_x is the test data
+# These are saved in pandas DataFrames and Series. (numpy arrays are also used)
 
 train = pd.read_csv('../input/sample-data/train.csv')
 train_x = train.drop(['target'], axis=1)
 train_y = train['target']
 test_x = pd.read_csv('../input/sample-data/test.csv')
 
-# 説明用に学習データとテストデータの元の状態を保存しておく
+# Save training and test datasets in their original form for explanations
 train_x_saved = train_x.copy()
 test_x_saved = test_x.copy()
 
 
-# 学習データとテストデータを返す関数
+# Function to recover original training and test datasets
 def load_data():
     train_x, test_x = train_x_saved.copy(), test_x_saved.copy()
     return train_x, test_x
 
 
-# 変換するカテゴリ変数をリストに格納
+# Store names of categorical variables to be converted in list
 cat_cols = ['sex', 'product', 'medical_info_b2', 'medical_info_b3']
 
 # -----------------------------------
-# one-hot encoding
+# One-hot encoding
 # -----------------------------------
-# データの読み込み
+# Load the data
 train_x, test_x = load_data()
 # -----------------------------------
 
-# 学習データとテストデータを結合してget_dummiesによるone-hot encodingを行う
+# Concatenate the training and test datasets, and apply one-hot encoding via get_dummies
 all_x = pd.concat([train_x, test_x])
 all_x = pd.get_dummies(all_x, columns=cat_cols)
 
-# 学習データとテストデータに再分割
+# Resplit into training and test data
 train_x = all_x.iloc[:train_x.shape[0], :].reset_index(drop=True)
 test_x = all_x.iloc[train_x.shape[0]:, :].reset_index(drop=True)
 
 # -----------------------------------
-# データの読み込み
+# Load the data
 train_x, test_x = load_data()
 # -----------------------------------
 from sklearn.preprocessing import OneHotEncoder
 
-# OneHotEncoderでのencoding
+# Encoding with the OneHotEncoder function
 ohe = OneHotEncoder(sparse=False, categories='auto')
 ohe.fit(train_x[cat_cols])
 
-# ダミー変数の列名の作成
+# Create column names for dummy variables
 columns = []
 for i, c in enumerate(cat_cols):
     columns += [f'{c}_{v}' for v in ohe.categories_[i]]
 
-# 生成されたダミー変数をデータフレームに変換
+# Put the created dummy variables into data frames
 dummy_vals_train = pd.DataFrame(ohe.transform(train_x[cat_cols]), columns=columns)
 dummy_vals_test = pd.DataFrame(ohe.transform(test_x[cat_cols]), columns=columns)
 
-# 残りの変数と結合
+# Join the remaining variables
 train_x = pd.concat([train_x.drop(cat_cols, axis=1), dummy_vals_train], axis=1)
 test_x = pd.concat([test_x.drop(cat_cols, axis=1), dummy_vals_test], axis=1)
 
 # -----------------------------------
-# label encoding
+# Label encoding
 # -----------------------------------
-# データの読み込み
+# Load the data
 train_x, test_x = load_data()
 # -----------------------------------
 from sklearn.preprocessing import LabelEncoder
 
-# カテゴリ変数をループしてlabel encoding
+# Loop over the categorical variables and apply label encoding
 for c in cat_cols:
-    # 学習データに基づいて定義する
+    # Define labels based on the training data
     le = LabelEncoder()
     le.fit(train_x[c])
     train_x[c] = le.transform(train_x[c])
     test_x[c] = le.transform(test_x[c])
 
 # -----------------------------------
-# feature hashing
+# Feature hashing
 # -----------------------------------
-# データの読み込み
+# Load the data
 train_x, test_x = load_data()
 # -----------------------------------
 from sklearn.feature_extraction import FeatureHasher
 
-# カテゴリ変数をループしてfeature hashing
+# Loop over the categorical variables and apply feature hashing
 for c in cat_cols:
-    # FeatureHasherの使い方は、他のencoderとは少し異なる
+    # Using the FeatureHasher function is slightly different from other encoders
 
     fh = FeatureHasher(n_features=5, input_type='string')
-    # 変数を文字列に変換してからFeatureHasherを適用
+    # Convert the variable to a string and apply the FeatureHasher
     hash_train = fh.transform(train_x[[c]].astype(str).values)
     hash_test = fh.transform(test_x[[c]].astype(str).values)
-    # データフレームに変換
+    # Add to a data frame
     hash_train = pd.DataFrame(hash_train.todense(), columns=[f'{c}_{i}' for i in range(5)])
     hash_test = pd.DataFrame(hash_test.todense(), columns=[f'{c}_{i}' for i in range(5)])
-    # 元のデータフレームと結合
+    # Join with the original data frame
     train_x = pd.concat([train_x, hash_train], axis=1)
     test_x = pd.concat([test_x, hash_test], axis=1)
 
-# 元のカテゴリ変数を削除
+# Drop the original categorical variable columns
 train_x.drop(cat_cols, axis=1, inplace=True)
 test_x.drop(cat_cols, axis=1, inplace=True)
 
 # -----------------------------------
-# frequency encoding
+# Frequency encoding
 # -----------------------------------
-# データの読み込み
+# Load the data
 train_x, test_x = load_data()
 # -----------------------------------
-# 変数をループしてfrequency encoding
+# Loop over the categorical variables and apply frequency encoding
 for c in cat_cols:
     freq = train_x[c].value_counts()
-    # カテゴリの出現回数で置換
+    # Replace each categorical variable with its frequency of occurrence
     train_x[c] = train_x[c].map(freq)
     test_x[c] = test_x[c].map(freq)
 
 # -----------------------------------
-# target encoding
+# Target encoding
 # -----------------------------------
-# データの読み込み
+# Load the data
 train_x, test_x = load_data()
 # -----------------------------------
 from sklearn.model_selection import KFold
 
-# 変数をループしてtarget encoding
+# Loop over the categorical variables and apply target encoding
 for c in cat_cols:
-    # 学習データ全体で各カテゴリにおけるtargetの平均を計算
+    # Calculate the average of the target for each categorical value in the training data
     data_tmp = pd.DataFrame({c: train_x[c], 'target': train_y})
     target_mean = data_tmp.groupby(c)['target'].mean()
-    # テストデータのカテゴリを置換
+    # Replace the categorical variables in the test data
     test_x[c] = test_x[c].map(target_mean)
 
-    # 学習データの変換後の値を格納する配列を準備
+    # Prepare an array to store the converted training data
     tmp = np.repeat(np.nan, train_x.shape[0])
 
-    # 学習データを分割
+    # Split the training data
     kf = KFold(n_splits=4, shuffle=True, random_state=72)
     for idx_1, idx_2 in kf.split(train_x):
-        # out-of-foldで各カテゴリにおける目的変数の平均を計算
+        # Calculate the average of the target values for the out-of-fold categorical variables
         target_mean = data_tmp.iloc[idx_1].groupby(c)['target'].mean()
-        # 変換後の値を一時配列に格納
+        # Store the converted values temporarily in an array
         tmp[idx_2] = train_x[c].iloc[idx_2].map(target_mean)
 
-    # 変換後のデータで元の変数を置換
+    # Replace the original data with the converted values
     train_x[c] = tmp
 
 # -----------------------------------
-# target encoding - クロスバリデーションのfoldごとの場合
+# Target encoding - for each fold of cross validation
 # -----------------------------------
-# データの読み込み
+# Load the data
 train_x, test_x = load_data()
 # -----------------------------------
 from sklearn.model_selection import KFold
 
-# クロスバリデーションのfoldごとにtarget encodingをやり直す
+# Apply target encoding for each cross validation fold
 kf = KFold(n_splits=4, shuffle=True, random_state=71)
 for i, (tr_idx, va_idx) in enumerate(kf.split(train_x)):
 
-    # 学習データからバリデーションデータを分ける
+    # Split the validation data off from the training data
     tr_x, va_x = train_x.iloc[tr_idx].copy(), train_x.iloc[va_idx].copy()
     tr_y, va_y = train_y.iloc[tr_idx], train_y.iloc[va_idx]
 
-    # 変数をループしてtarget encoding
+    # Loop over the categorical variables and apply target encoding
     for c in cat_cols:
-        # 学習データ全体で各カテゴリにおけるtargetの平均を計算
+        # Calculate the average of the target for each categorical value in the training data
         data_tmp = pd.DataFrame({c: tr_x[c], 'target': tr_y})
         target_mean = data_tmp.groupby(c)['target'].mean()
-        # バリデーションデータのカテゴリを置換
+        # Replace the categorical variables in the validation data
         va_x.loc[:, c] = va_x[c].map(target_mean)
 
-        # 学習データの変換後の値を格納する配列を準備
+        # Prepare an array to store the converted training data
         tmp = np.repeat(np.nan, tr_x.shape[0])
         kf_encoding = KFold(n_splits=4, shuffle=True, random_state=72)
         for idx_1, idx_2 in kf_encoding.split(tr_x):
-            # out-of-foldで各カテゴリにおける目的変数の平均を計算
+            # Calculate the average of the target values for the out-of-fold categorical variables
             target_mean = data_tmp.iloc[idx_1].groupby(c)['target'].mean()
-            # 変換後の値を一時配列に格納
+            # Store the converted values temporarily in an array
             tmp[idx_2] = tr_x[c].iloc[idx_2].map(target_mean)
 
         tr_x.loc[:, c] = tmp
 
-    # 必要に応じてencodeされた特徴量を保存し、あとで読み込めるようにしておく
+    # Remember to save the encoded features so you can come back and read the data later if necessary
 
 # -----------------------------------
-# target encoding - クロスバリデーションのfoldとtarget encodingのfoldの分割を合わせる場合
+# Target encoding - when the cross validationand target encoded folds need to be partitioned
 # -----------------------------------
-# データの読み込み
+# Load the data
 train_x, test_x = load_data()
 # -----------------------------------
 from sklearn.model_selection import KFold
 
-# クロスバリデーションのfoldを定義
+# Define the cross validation folds
 kf = KFold(n_splits=4, shuffle=True, random_state=71)
 
-# 変数をループしてtarget encoding
+# Loop over the categorical variables and apply target encoding
 for c in cat_cols:
 
-    # targetを付加
+    # Add the target values
     data_tmp = pd.DataFrame({c: train_x[c], 'target': train_y})
-    # 変換後の値を格納する配列を準備
+    # Store the converted values temporarily in an array
     tmp = np.repeat(np.nan, train_x.shape[0])
 
-    # 学習データからバリデーションデータを分ける
+    # Split off the cross validation 
     for i, (tr_idx, va_idx) in enumerate(kf.split(train_x)):
-        # 学習データについて、各カテゴリにおける目的変数の平均を計算
+        # Calculate the average of the target values for each catergory for the training data
         target_mean = data_tmp.iloc[tr_idx].groupby(c)['target'].mean()
-        # バリデーションデータについて、変換後の値を一時配列に格納
+        # For the validation data, store the converted values temporarily in an array
         tmp[va_idx] = train_x[c].iloc[va_idx].map(target_mean)
 
-    # 変換後のデータで元の変数を置換
+    # Replace the original data with the converted values
     train_x[c] = tmp

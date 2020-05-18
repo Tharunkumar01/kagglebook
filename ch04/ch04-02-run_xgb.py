@@ -1,18 +1,18 @@
 # ---------------------------------
-# データ等の準備
+# Prepare the data etc.
 # ----------------------------------
 import numpy as np
 import pandas as pd
 
-# train_xは学習データ、train_yは目的変数、test_xはテストデータ
-# pandasのDataFrame, Seriesで保持します。（numpyのarrayで保持することもあります）
+# train_x is the training data, train_y is the target values, and test_x is the test data
+# stored in pandas DataFrames and Series (also possible to use numpy arrays)）
 
 train = pd.read_csv('../input/sample-data/train_preprocessed.csv')
 train_x = train.drop(['target'], axis=1)
 train_y = train['target']
 test_x = pd.read_csv('../input/sample-data/test_preprocessed.csv')
 
-# 学習データを学習データとバリデーションデータに分ける
+# Split the training data into training and validation data
 from sklearn.model_selection import KFold
 
 kf = KFold(n_splits=4, shuffle=True, random_state=71)
@@ -21,38 +21,38 @@ tr_x, va_x = train_x.iloc[tr_idx], train_x.iloc[va_idx]
 tr_y, va_y = train_y.iloc[tr_idx], train_y.iloc[va_idx]
 
 # -----------------------------------
-# xgboostの実装
+# xgboost implementation
 # -----------------------------------
 import xgboost as xgb
 from sklearn.metrics import log_loss
 
-# 特徴量と目的変数をxgboostのデータ構造に変換する
+# Change the features and target values into format suitable for xgboost
 dtrain = xgb.DMatrix(tr_x, label=tr_y)
 dvalid = xgb.DMatrix(va_x, label=va_y)
 dtest = xgb.DMatrix(test_x)
 
-# ハイパーパラメータの設定
+# Set the hyperparameters
 params = {'objective': 'binary:logistic', 'silent': 1, 'random_state': 71}
 num_round = 50
 
-# 学習の実行
-# バリデーションデータもモデルに渡し、学習の進行とともにスコアがどう変わるかモニタリングする
-# watchlistには学習データおよびバリデーションデータをセットする
+# Train the model
+# Pass the validation data to the model, and monitor how the score changes during training
+# In watchlist put the training and validation data
 watchlist = [(dtrain, 'train'), (dvalid, 'eval')]
 model = xgb.train(params, dtrain, num_round, evals=watchlist)
 
-# バリデーションデータでのスコアの確認
+# Check the score using the validation data
 va_pred = model.predict(dvalid)
 score = log_loss(va_y, va_pred)
 print(f'logloss: {score:.4f}')
 
-# 予測（二値の予測値ではなく、1である確率を出力するようにしている）
+# Output prediction (not a binary value but a probability)
 pred = model.predict(dtest)
 
 # -----------------------------------
-# 学習データとバリデーションデータのスコアのモニタリング
+# Monitor the scores for the training and validation data
 # -----------------------------------
-# モニタリングをloglossで行い、アーリーストッピングの観察するroundを20とする
+# Monitor the logless metric, set number of early stopping rounds to 20
 params = {'objective': 'binary:logistic', 'silent': 1, 'random_state': 71,
           'eval_metric': 'logloss'}
 num_round = 500
@@ -60,5 +60,5 @@ watchlist = [(dtrain, 'train'), (dvalid, 'eval')]
 model = xgb.train(params, dtrain, num_round, evals=watchlist,
                   early_stopping_rounds=20)
 
-# 最適な決定木の本数で予測を行う
+# Use the optimial decision tree to make predictions
 pred = model.predict(dtest, ntree_limit=model.best_ntree_limit)

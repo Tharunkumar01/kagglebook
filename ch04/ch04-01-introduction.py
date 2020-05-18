@@ -1,11 +1,11 @@
 # ---------------------------------
-# データ等の準備
+# Prepare the data etc.
 # ----------------------------------
 import numpy as np
 import pandas as pd
 
-# train_xは学習データ、train_yは目的変数、test_xはテストデータ
-# pandasのDataFrame, Seriesで保持します。（numpyのarrayで保持することもあります）
+# train_x is the training data, train_y is the target values, and test_x is the test data
+# stored in pandas DataFrames and Series (also possible to use numpy arrays)
 
 train = pd.read_csv('../input/sample-data/train_preprocessed.csv')
 train_x = train.drop(['target'], axis=1)
@@ -15,7 +15,7 @@ test_x = pd.read_csv('../input/sample-data/test_preprocessed.csv')
 import xgboost as xgb
 
 
-# コードの動作を確認するためのモデル
+# The Model class to operate the code
 class Model:
 
     def __init__(self, params=None):
@@ -39,58 +39,58 @@ class Model:
 
 
 # -----------------------------------
-# モデルの学習と予測
+# Model training and prediction
 # -----------------------------------
-# モデルのハイパーパラメータを指定する
+# Specify the model hyperparameters
 params = {'param1': 10, 'param2': 100}
 
-# Modelクラスを定義しているものとする
-# Modelクラスは、fitで学習し、predictで予測値の確率を出力する
+# Define the Model class
+# The Model class has functions fit for training and predict for outputting predicted probabilities
 
-# モデルを定義する
+# Define the Model class
 model = Model(params)
 
-# 学習データに対してモデルを学習させる
+# Use the training data to train the model
 model.fit(train_x, train_y)
 
-# テストデータに対して予測結果を出力する
+# Output predictions for the test data
 pred = model.predict(test_x)
 
 # -----------------------------------
-# バリデーション
+# Validation
 # -----------------------------------
 from sklearn.metrics import log_loss
 from sklearn.model_selection import KFold
 
-# 学習データ・バリデーションデータを分けるためのインデックスを作成する
-# 学習データを4つに分割し、うち1つをバリデーションデータとする
+# Create an index in order to split the training and validation data
+# Split the training data into 4, and keep aside 1 quarter for validation
 kf = KFold(n_splits=4, shuffle=True, random_state=71)
 tr_idx, va_idx = list(kf.split(train_x))[0]
 
-# 学習データを学習データとバリデーションデータに分ける
+# Split the training data into training and validation data
 tr_x, va_x = train_x.iloc[tr_idx], train_x.iloc[va_idx]
 tr_y, va_y = train_y.iloc[tr_idx], train_y.iloc[va_idx]
 
-# モデルを定義する
+# Define the model
 model = Model(params)
 
-# 学習データに対してモデルを学習させる
-# モデルによっては、バリデーションデータを同時に与えてスコアをモニタリングすることができる
+# Use the training data to train the model
+# Depending on the model, validation data can be supplied at the same time in order to monitor the score
 model.fit(tr_x, tr_y)
 
-# バリデーションデータに対して予測し、評価を行う
+# Make predictions with the validation data, and calculate the score
 va_pred = model.predict(va_x)
 score = log_loss(va_y, va_pred)
 print(f'logloss: {score:.4f}')
 
 # -----------------------------------
-# クロスバリデーション
+# Cross validation
 # -----------------------------------
 from sklearn.metrics import log_loss
 from sklearn.model_selection import KFold
 
-# 学習データを4つに分け、うち1つをバリデーションデータとする
-# どれをバリデーションデータとするかを変えて学習・評価を4回行う
+# Split the training data into 4, and keep aside 1 quarter for validation
+# Change the quarter used for validation and evaluate the score 4 times
 scores = []
 kf = KFold(n_splits=4, shuffle=True, random_state=71)
 for tr_idx, va_idx in kf.split(train_x):
@@ -102,5 +102,5 @@ for tr_idx, va_idx in kf.split(train_x):
     score = log_loss(va_y, va_pred)
     scores.append(score)
 
-# クロスバリデーションの平均のスコアを出力する
+# Output the mean cross validation score
 print(f'logloss: {np.mean(scores):.4f}')

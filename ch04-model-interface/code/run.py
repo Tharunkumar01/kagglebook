@@ -28,30 +28,30 @@ if __name__ == '__main__':
 
     params_nn = {
         'layers': 3,
-        # サンプルのため早く終わるように設定
+        # Setting so this sample code executes quickly
         'nb_epoch': 5,  # 1000
         'patience': 10,
         'dropout': 0.5,
         'units': 512,
     }
 
-    # 特徴量の指定
+    # Specify features
     features = [f'feat_{i}' for i in range(1, 94)]
 
-    # xgboostによる学習・予測
+    # Train and predict using xgboost
     runner = Runner('xgb1', ModelXGB, features, params_xgb)
     runner.run_train_cv()
     runner.run_predict_cv()
     Submission.create_submission('xgb1')
 
-    # ニューラルネットによる学習・予測
+    # Train and predict using neural network
     runner = Runner('nn1', ModelNN, features, params_nn)
     runner.run_train_cv()
     runner.run_predict_cv()
     Submission.create_submission('nn1')
 
     '''
-    # (参考）xgboostによる学習・予測 - 学習データ全体を使う場合
+    # (For reference) Train and predict using xgboost using all training data
     runner = Runner('xgb1-train-all', ModelXGB, features, params_xgb_all)
     runner.run_train_all()
     runner.run_test_all()

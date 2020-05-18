@@ -1,18 +1,18 @@
 # ---------------------------------
-# データ等の準備
+# Prepare the data etc.
 # ----------------------------------
 import numpy as np
 import pandas as pd
 
-# train_xは学習データ、train_yは目的変数、test_xはテストデータ
-# pandasのDataFrame, Seriesで保持します。（numpyのarrayで保持することもあります）
+# train_x is the training data, train_y is the target values, and test_x is the test data
+# stored in pandas DataFrames and Series (also possible to use numpy arrays)
 
 train = pd.read_csv('../input/sample-data/train_preprocessed.csv')
 train_x = train.drop(['target'], axis=1)
 train_y = train['target']
 test_x = pd.read_csv('../input/sample-data/test_preprocessed.csv')
 
-# xgboostによる学習・予測を行うクラス
+# Class for training and making predictions using xgboost
 import xgboost as xgb
 
 
@@ -41,30 +41,30 @@ class Model:
 
 
 # -----------------------------------
-# hold-out法
+# hold-out method
 # -----------------------------------
-# hold-out法でのバリデーションデータの分割
+# Partition validation data for hold-out method
 
 from sklearn.model_selection import train_test_split
 
-# train_test_split関数を用いてhold-out法で分割する
+# Use train_test_split function for partitioning
 tr_x, va_x, tr_y, va_y = train_test_split(train_x, train_y,
                                           test_size=0.25, random_state=71, shuffle=True)
 
 # -----------------------------------
-# hold-out法でバリデーションを行う
+# Perform validation with hold-out method
 
 from sklearn.metrics import log_loss
 from sklearn.model_selection import train_test_split
 
-# Modelクラスを定義しているものとする
-# Modelクラスは、fitで学習し、predictで予測値の確率を出力する
+# Assume Model class has been predefined
+# Model class performs fitting and returns predicted probabilities for each outcome
 
-# train_test_split関数を用いてhold-out法で分割する
+# Use train_test_split function for partitioning
 tr_x, va_x, tr_y, va_y = train_test_split(train_x, train_y,
                                           test_size=0.25, random_state=71, shuffle=True)
 
-# 学習の実行、バリデーションデータの予測値の出力、スコアの計算を行う
+# Train the model, output predictions and calculate score
 model = Model()
 model.fit(tr_x, tr_y, va_x, va_y)
 va_pred = model.predict(va_x)
@@ -72,54 +72,54 @@ score = log_loss(va_y, va_pred)
 print(score)
 
 # -----------------------------------
-# KFoldクラスを用いてhold-out法でバリデーションデータを分割
+# Use the KFold class to partition validation data for hold-out method
 
 from sklearn.model_selection import KFold
 
-# KFoldクラスを用いてhold-out法で分割する
+# Use KFold class to parition for hold-out method
 kf = KFold(n_splits=4, shuffle=True, random_state=71)
 tr_idx, va_idx = list(kf.split(train_x))[0]
 tr_x, va_x = train_x.iloc[tr_idx], train_x.iloc[va_idx]
 tr_y, va_y = train_y.iloc[tr_idx], train_y.iloc[va_idx]
 
 # -----------------------------------
-# クロスバリデーション
+# Cross validation
 # -----------------------------------
-# クロスバリデーションでのデータの分割
+# Partition data for cross-validation
 
 from sklearn.model_selection import KFold
 
-# KFoldクラスを用いてクロスバリデーションの分割を行う
+# Use KFold class for partitioning for cross-valdiation
 kf = KFold(n_splits=4, shuffle=True, random_state=71)
 for tr_idx, va_idx in kf.split(train_x):
     tr_x, va_x = train_x.iloc[tr_idx], train_x.iloc[va_idx]
     tr_y, va_y = train_y.iloc[tr_idx], train_y.iloc[va_idx]
 
 # -----------------------------------
-# クロスバリデーションを行う
+# Perform cross-validation
 
 from sklearn.metrics import log_loss
 from sklearn.model_selection import KFold
 
-# Modelクラスを定義しているものとする
-# Modelクラスは、fitで学習し、predictで予測値の確率を出力する
+# It is assumed that the Model class has been predefined
+# Model class performs fitting and returns predicted probabilities for each outcome
 
 scores = []
 
-# KFoldクラスを用いてクロスバリデーションの分割を行う
+# Use KFold class for partitioning for cross-valdiation
 kf = KFold(n_splits=4, shuffle=True, random_state=71)
 for tr_idx, va_idx in kf.split(train_x):
     tr_x, va_x = train_x.iloc[tr_idx], train_x.iloc[va_idx]
     tr_y, va_y = train_y.iloc[tr_idx], train_y.iloc[va_idx]
 
-    # 学習の実行、バリデーションデータの予測値の出力、スコアの計算を行う
+    # Train the model, output predictions and calculate score
     model = Model()
     model.fit(tr_x, tr_y, va_x, va_y)
     va_pred = model.predict(va_x)
     score = log_loss(va_y, va_pred)
     scores.append(score)
 
-# 各foldのスコアの平均をとる
+# Take average of scores for each fold
 print(np.mean(scores))
 
 # -----------------------------------
@@ -127,7 +127,7 @@ print(np.mean(scores))
 # -----------------------------------
 from sklearn.model_selection import StratifiedKFold
 
-# StratifiedKFoldクラスを用いて層化抽出による分割を行う
+# Use the StratifiedKFold class to perform partitioning into stratified folds
 kf = StratifiedKFold(n_splits=4, shuffle=True, random_state=71)
 for tr_idx, va_idx in kf.split(train_x, train_y):
     tr_x, va_x = train_x.iloc[tr_idx], train_x.iloc[va_idx]
@@ -136,30 +136,30 @@ for tr_idx, va_idx in kf.split(train_x, train_y):
 # -----------------------------------
 # GroupKFold
 # -----------------------------------
-# 4件ずつ同じユーザーがいるデータであったとする
+# It is assumed that the data has the same users repeated 4 times
 train_x['user_id'] = np.arange(0, len(train_x)) // 4
 # -----------------------------------
 
 from sklearn.model_selection import KFold, GroupKFold
 
-# user_id列の顧客IDを単位として分割することにする
+# Partition taking the user_id column to be the customer ID
 user_id = train_x['user_id']
 unique_user_ids = user_id.unique()
 
-# KFoldクラスを用いて、顧客ID単位で分割する
+# Use the KFold class and partition using the customer ID
 scores = []
 kf = KFold(n_splits=4, shuffle=True, random_state=71)
 for tr_group_idx, va_group_idx in kf.split(unique_user_ids):
-    # 顧客IDをtrain/valid（学習に使うデータ、バリデーションデータ）に分割する
+    # Parition using the customer ID (into data for training and validation)
     tr_groups, va_groups = unique_user_ids[tr_group_idx], unique_user_ids[va_group_idx]
 
-    # 各レコードの顧客IDがtrain/validのどちらに属しているかによって分割する
+    # Partition records based on whether the customer ID is in train/valid
     is_tr = user_id.isin(tr_groups)
     is_va = user_id.isin(va_groups)
     tr_x, va_x = train_x[is_tr], train_x[is_va]
     tr_y, va_y = train_y[is_tr], train_y[is_va]
 
-# （参考）GroupKFoldクラスではシャッフルと乱数シードの指定ができないため使いづらい
+# (For reference)GroupKFold is difficult to use as you cannot shuffle or specify the random number seed
 kf = GroupKFold(n_splits=4)
 for tr_idx, va_idx in kf.split(train_x, train_y, user_id):
     tr_x, va_x = train_x.iloc[tr_idx], train_x.iloc[va_idx]
@@ -168,7 +168,7 @@ for tr_idx, va_idx in kf.split(train_x, train_y, user_id):
 # -----------------------------------
 # leave-one-out
 # -----------------------------------
-# データが100件しかないものとする
+# Assume that there are only 100 data
 train_x = train_x.iloc[:100, :].copy()
 # -----------------------------------
 from sklearn.model_selection import LeaveOneOut

@@ -6,14 +6,14 @@ from keras.layers import Dense, Dropout
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 
-# tensorflowの警告抑制
+# Suppress tensorflow warnings
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 import tensorflow as tf
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
 
-# xgboostによるモデル
+# xgboost model
 class Model1Xgb:
 
     def __init__(self):
@@ -34,7 +34,7 @@ class Model1Xgb:
         return pred
 
 
-# ニューラルネットによるモデル
+# Neural network model
 class Model1NN:
 
     def __init__(self):
@@ -70,7 +70,7 @@ class Model1NN:
         return pred
 
 
-# 線形モデル
+# Linear model
 class Model2Linear:
 
     def __init__(self):

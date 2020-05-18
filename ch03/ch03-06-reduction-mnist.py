@@ -1,20 +1,20 @@
 ﻿# ---------------------------------
-# データ等の準備
+# Prepare the data etc.
 # ----------------------------------
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# MNISTデータの可視化
+# Visualization of MNIST data
 
-# keras.datasetsを用いてMNISTデータをダウンロードする
+# Import MNIST data from keras.datasets
 from keras.datasets import mnist
 (train_x, train_y), (test_x, test_y) = mnist.load_data()
 
-# 2次元データにする
+# Convert to 2D data
 train_x = train_x.reshape(train_x.shape[0], -1)
 
-# 上位1000件に縮小させる
+# Decrease size by taking only first 1000 data
 train_x = pd.DataFrame(train_x[:1000, :])
 train_y = train_y[:1000]
 
@@ -23,11 +23,11 @@ train_y = train_y[:1000]
 # -----------------------------------
 from sklearn.decomposition import PCA
 
-# 学習データに基づいてPCAによる変換を定義
+# Fit the PCA transformation by using the training data
 pca = PCA()
 x_pca = pca.fit_transform(train_x)
 
-# クラス毎に色分けして2次元にプロット
+# Plot in 2D, differentiating each class by color 
 f, ax = plt.subplots(1)
 for i in range(10):
     mask = train_y == i
@@ -41,12 +41,12 @@ plt.show()
 # -----------------------------------
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 
-# クラスを最も上手く分ける2軸を線形判別分析で導出
+# Derive the 2 axes that best split the classes using linear discriminat analysis
 lda = LDA(n_components=2)
 x_lda = lda.fit_transform(train_x, train_y)
 
-# クラス毎に色分けして2次元にプロット
-# 良く分割しているが、目的変数を利用しているため他と比べて非常に有利な条件となっていることに注意
+# Plot in 2D, differentiating each class by color
+# Note that the division is good, but this method is using the target values which gives it an advantage over other methods
 f, ax = plt.subplots(1)
 for i in range(10):
     mask = train_y == i
@@ -60,11 +60,11 @@ plt.show()
 # -----------------------------------
 from sklearn.manifold import TSNE
 
-# t-sneによる変換
+# Transform using t-sne
 tsne = TSNE(n_components=2)
 x_tsne = tsne.fit_transform(train_x)
 
-# クラス毎に色分けして2次元にプロット
+# Plot in 2D, differentiating each class by color
 f, ax = plt.subplots(1)
 for i in range(10):
     mask = train_y == i
@@ -78,11 +78,11 @@ plt.show()
 # -----------------------------------
 import umap
 
-# UMAPによる変換
+# Transform using UMAP
 um = umap.UMAP()
 x_umap = um.fit_transform(train_x)
 
-# クラス毎に色分けして2次元にプロット
+# Plot in 2D, differentiating each class by color
 f, ax = plt.subplots(1)
 for i in range(10):
     mask = train_y == i

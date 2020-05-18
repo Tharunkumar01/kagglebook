@@ -1,10 +1,10 @@
 # ---------------------------------
-# データ等の準備
+# Prepare the data etc.
 # ----------------------------------
 import numpy as np
 import pandas as pd
 
-# データの作成（ランダムなデータとしています）
+# Data creation (just random data)
 rand = np.random.RandomState(71)
 train_x = pd.DataFrame(rand.uniform(0.0, 1.0, (10000, 2)), columns=['model1', 'model2'])
 adv_train = pd.Series(rand.uniform(0.0, 1.0, 10000))
@@ -14,36 +14,36 @@ train_y = pd.Series((train_x.values * w).sum(axis=1) > 0.5)
 # ---------------------------------
 # adversarial stochastic blending
 # ----------------------------------
-# モデルの予測値を加重平均する重みの値をadversarial validationで求める
-# train_x: 各モデルによる確率の予測値（実際には順位に変換したものを使用）
-# train_y: 目的変数
-# adv_train: 学習データのテストデータらしさを確率で表した値
+# Use adversarial validation to calculate weights for averaging predicted values from models
+# train_x: Predicted probabilities from each model (actually using results that have been ordered)
+# train_y: Target values
+# adv_train: Values that represent likelihood that training data was also test data
 
 from scipy.optimize import minimize
 from sklearn.metrics import roc_auc_score
 
-n_sampling = 50  # サンプリングの回数
-frac_sampling = 0.5  # サンプリングで学習データから取り出す割合
+n_sampling = 50  # Number of times to sample
+frac_sampling = 0.5  # Fraction of training data to take when sampling
 
 
 def score(x, data_x, data_y):
-    # 評価指標はAUCとする
+    # Use AUC as evaluation metric
     y_prob = data_x['model1'] * x + data_x['model2'] * (1 - x)
     return -roc_auc_score(data_y, y_prob)
 
 
-# サンプリングにより加重平均の重みの値を求めることを繰り返す
+# Repeatedly use sampling to calculate weights for weighted averaging
 results = []
 for i in range(n_sampling):
-    # サンプリングを行う
+    # Perform sampling
     seed = i
     idx = pd.Series(np.arange(len(train_y))).sample(frac=frac_sampling, replace=False,
                                                     random_state=seed, weights=adv_train)
     x_sample = train_x.iloc[idx]
     y_sample = train_y.iloc[idx]
 
-    # サンプリングしたデータに対して、加重平均の重みの値を最適化により求める
-    # 制約式を持たせるようにしたため、アルゴリズムはCOBYLAを選択
+    # Want to use sampling data to find most optimum weights for weighted averaging
+    # As there are constraints use the COBYLA algorithm
     init_x = np.array(0.5)
     constraints = (
         {'type': 'ineq', 'fun': lambda x: x},
@@ -55,6 +55,6 @@ for i in range(n_sampling):
                       method='COBYLA')
     results.append((result.x, 1.0 - result.x))
 
-# model1, model2の加重平均の重み
+# Weights for model1 and model2 weighted averaging
 results = np.array(results)
 w_model1, w_model2 = results.mean(axis=0)

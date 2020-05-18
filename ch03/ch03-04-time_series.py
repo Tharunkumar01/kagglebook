@@ -2,12 +2,12 @@ import numpy as np
 import pandas as pd
 
 # -----------------------------------
-# ワイドフォーマット、ロングフォーマット
+# Wide format, long format
 # -----------------------------------
 
-# ワイドフォーマットのデータを読み込む
+# Load wide format data
 df_wide = pd.read_csv('../input/ch03/time_series_wide.csv', index_col=0)
-# インデックスの型を日付型に変更する
+# Convert the index column to datetime dtype
 df_wide.index = pd.to_datetime(df_wide.index)
 
 print(df_wide.iloc[:5, :3])
@@ -21,7 +21,7 @@ date
 2016-07-05  881  4729  1975
 '''
 
-# ロングフォーマットに変換する
+# Convert to long format
 df_long = df_wide.stack().reset_index(1)
 df_long.columns = ['id', 'value']
 
@@ -42,62 +42,61 @@ date
 ...
 '''
 
-# ワイドフォーマットに戻す
+# Restore wide format
 df_wide = df_long.pivot(index=None, columns='id', values='value')
 
 # -----------------------------------
-# ラグ変数
+# Lag variables
 # -----------------------------------
-# ワイドフォーマットのデータをセットする
+# Set data to wide format
 x = df_wide
 # -----------------------------------
-# xはワイドフォーマットのデータフレーム
-# インデックスが日付などの時間、列がユーザや店舗などで、値が売上などの注目する変数を表すものとする
-
-# 1期前のlagを取得
+# x is the wide format dataframe
+# The index is the date or timestamp, assume the columns store data of interest such as sales etc. for users or stores
+# Create lag data for one period ago
 x_lag1 = x.shift(1)
 
-# 7期前のlagを取得
+# Create lag data for seven periods ago
 x_lag7 = x.shift(7)
 
 # -----------------------------------
-# 1期前から3期間の移動平均を算出
+# Calculate moving averages for three periods from one period before
 x_avg3 = x.shift(1).rolling(window=3).mean()
 
 # -----------------------------------
-# 1期前から7期間の最大値を算出
+# Calculate max values over seven periods from one period before
 x_max7 = x.shift(1).rolling(window=7).max()
 
 # -----------------------------------
-# 7期前, 14期前, 21期前, 28期前の値の平均
+# Calculate average of data from 7, 14, 21 and 28 periods before
 x_e7_avg = (x.shift(7) + x.shift(14) + x.shift(21) + x.shift(28)) / 4.0
 
 # -----------------------------------
-# 1期先の値を取得
+# Create values for one period ahead
 x_lead1 = x.shift(-1)
 
 # -----------------------------------
-# ラグ変数
+# Lag variables
 # -----------------------------------
-# データの読み込み
+# Load the data
 train_x = pd.read_csv('../input/ch03/time_series_train.csv')
 event_history = pd.read_csv('../input/ch03/time_series_events.csv')
 train_x['date'] = pd.to_datetime(train_x['date'])
 event_history['date'] = pd.to_datetime(event_history['date'])
 # -----------------------------------
 
-# train_xは学習データで、ユーザID, 日付を列として持つDataFrameとする
-# event_historyは、過去に開催したイベントの情報で、日付、イベントを列として持つDataFrameとする
+# train_x is training data in a dataframe with columns for user id and date
+# event_history contains data from past events in a dataframe with date and event columns
 
-# occurrencesは、日付、セールが開催されたか否かを列として持つDataFrameとなる
+# occurrences is a dataframe with columns for date and whether a sale was made or not
 dates = np.sort(train_x['date'].unique())
 occurrences = pd.DataFrame(dates, columns=['date'])
 sale_history = event_history[event_history['event'] == 'sale']
 occurrences['sale'] = occurrences['date'].isin(sale_history['date'])
 
-# 累積和をとることで、それぞれの日付での累積出現回数を表すようにする
-# occurrencesは、日付、セールの累積出現回数を列として持つDataFrameとなる
+# Take cumulative sums to calculate to number of occurances on each date
+# occurrences is now a dataframe with columns for date and cummulative number of sales on that date
 occurrences['sale'] = occurrences['sale'].cumsum()
 
-# 日付をキーとして学習データと結合する
+# Using the timestamp as a key, combine with the training dataset
 train_x = train_x.merge(occurrences, on='date', how='left')

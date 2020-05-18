@@ -1,69 +1,69 @@
 # ---------------------------------
-# データ等の準備
+# Prepare the data etc.
 # ----------------------------------
 import numpy as np
 import pandas as pd
 
-# train_xは学習データ、train_yは目的変数、test_xはテストデータ
-# pandasのDataFrame, Seriesで保持します。（numpyのarrayで保持することもあります）
+# train_x is the training data, train_y contains the target values, test_x is the test data
+# These are saved in pandas DataFrames and Series. (numpy arrays are also used)
 
 train = pd.read_csv('../input/sample-data/train_preprocessed.csv')
 train_x = train.drop(['target'], axis=1)
 train_y = train['target']
 test_x = pd.read_csv('../input/sample-data/test_preprocessed.csv')
 
-# 説明用に学習データとテストデータの元の状態を保存しておく
+# Save training and test datasets in their original form for explanations
 train_x_saved = train_x.copy()
 test_x_saved = test_x.copy()
 
 
-# 学習データとテストデータを返す関数
+# Function to recover original training and test datasets
 def load_data():
     train_x, test_x = train_x_saved.copy(), test_x_saved.copy()
     return train_x, test_x
 
 
-# 変換する数値変数をリストに格納
+# Store names of numerical variables to be converted in list
 num_cols = ['age', 'height', 'weight', 'amount',
             'medical_info_a1', 'medical_info_a2', 'medical_info_a3', 'medical_info_b1']
 
 # -----------------------------------
-# 標準化
+# Standardization
 # -----------------------------------
-# データの読み込み
+# Load the data
 train_x, test_x = load_data()
 # -----------------------------------
 from sklearn.preprocessing import StandardScaler
 
-# 学習データに基づいて複数列の標準化を定義
+# Compute standardization parameters for multiple columns of the training data
 scaler = StandardScaler()
 scaler.fit(train_x[num_cols])
 
-# 変換後のデータで各列を置換
+# Replace columns with standardized values
 train_x[num_cols] = scaler.transform(train_x[num_cols])
 test_x[num_cols] = scaler.transform(test_x[num_cols])
 
 # -----------------------------------
-# データの読み込み
+# Load the data
 train_x, test_x = load_data()
 # -----------------------------------
 from sklearn.preprocessing import StandardScaler
 
-# 学習データとテストデータを結合したものに基づいて複数列の標準化を定義
+# Compute standardization parameters for multiple columns from combined training and test data
 scaler = StandardScaler()
 scaler.fit(pd.concat([train_x[num_cols], test_x[num_cols]]))
 
-# 変換後のデータで各列を置換
+# Replace columns with standardized values
 train_x[num_cols] = scaler.transform(train_x[num_cols])
 test_x[num_cols] = scaler.transform(test_x[num_cols])
 
 # -----------------------------------
-# データの読み込み
+# Load the data
 train_x, test_x = load_data()
 # -----------------------------------
 from sklearn.preprocessing import StandardScaler
 
-# 学習データとテストデータを別々に標準化（悪い例）
+# Standardize training and test data separately (bad example)
 scaler_train = StandardScaler()
 scaler_train.fit(train_x[num_cols])
 train_x[num_cols] = scaler_train.transform(train_x[num_cols])
@@ -72,135 +72,135 @@ scaler_test.fit(test_x[num_cols])
 test_x[num_cols] = scaler_test.transform(test_x[num_cols])
 
 # -----------------------------------
-# Min-Maxスケーリング
+# Min-Max scaling
 # -----------------------------------
-# データの読み込み
+# Load the data
 train_x, test_x = load_data()
 # -----------------------------------
 from sklearn.preprocessing import MinMaxScaler
 
-# 学習データに基づいて複数列のMin-Maxスケーリングを定義
+# Compute parameters for min-max scaling for multiple columns of the training data
 scaler = MinMaxScaler()
 scaler.fit(train_x[num_cols])
 
-# 変換後のデータで各列を置換
+# Replace columns with min-max scaled values
 train_x[num_cols] = scaler.transform(train_x[num_cols])
 test_x[num_cols] = scaler.transform(test_x[num_cols])
 
 # -----------------------------------
-# 対数変換
+# Logarithmic transformation
 # -----------------------------------
 x = np.array([1.0, 10.0, 100.0, 1000.0, 10000.0])
 
-# 単に対数をとる
+# Take simple logarithm
 x1 = np.log(x)
 
-# 1を加えたあとに対数をとる
+# Take logarithm of x+1
 x2 = np.log1p(x)
 
-# 絶対値の対数をとってから元の符号を付加する
+# Apply original sign to logarithm taken of absolute value
 x3 = np.sign(x) * np.log(np.abs(x))
 
 # -----------------------------------
-# Box-Cox変換
+# Box-Cox transformation
 # -----------------------------------
-# データの読み込み
+# Load the data
 train_x, test_x = load_data()
 # -----------------------------------
 
-# 正の値のみをとる変数を変換対象としてリストに格納する
-# なお、欠損値も含める場合は、(~(train_x[c] <= 0.0)).all() などとする必要があるので注意
+# Store only columns that take positive values in a list for transformation
+# Note: when including missing values it is necessary to use (~(train_x[c] <= 0.0)).all() etc.
 pos_cols = [c for c in num_cols if (train_x[c] > 0.0).all() and (test_x[c] > 0.0).all()]
 
 from sklearn.preprocessing import PowerTransformer
 
-# 学習データに基づいて複数列のBox-Cox変換を定義
+# Fit Box-Cox transformation to the columns with positive values in the training data
 pt = PowerTransformer(method='box-cox')
 pt.fit(train_x[pos_cols])
 
-# 変換後のデータで各列を置換
+# Replace columns with transformed data
 train_x[pos_cols] = pt.transform(train_x[pos_cols])
 test_x[pos_cols] = pt.transform(test_x[pos_cols])
 
 # -----------------------------------
-# Yeo-Johnson変換
+# Yeo-Johnson transformation
 # -----------------------------------
-# データの読み込み
+# Load the data
 train_x, test_x = load_data()
 # -----------------------------------
 
 from sklearn.preprocessing import PowerTransformer
 
-# 学習データに基づいて複数列のYeo-Johnson変換を定義
+# Compute parameters for Yeo-Johnnson transformation for multiple columns of the training data
 pt = PowerTransformer(method='yeo-johnson')
 pt.fit(train_x[num_cols])
 
-# 変換後のデータで各列を置換
+# Replace columns with transformed data
 train_x[num_cols] = pt.transform(train_x[num_cols])
 test_x[num_cols] = pt.transform(test_x[num_cols])
 
 # -----------------------------------
-# clipping
+# Clipping
 # -----------------------------------
-# データの読み込み
+# Load the data
 train_x, test_x = load_data()
 # -----------------------------------
-# 列ごとに学習データの1％点、99％点を計算
+# Calculate 1% and 99% limits of each column of the training data
 p01 = train_x[num_cols].quantile(0.01)
 p99 = train_x[num_cols].quantile(0.99)
 
-# 1％点以下の値は1％点に、99％点以上の値は99％点にclippingする
+# Clip out values in the 1st and 99th percentiles
 train_x[num_cols] = train_x[num_cols].clip(p01, p99, axis=1)
 test_x[num_cols] = test_x[num_cols].clip(p01, p99, axis=1)
 
 # -----------------------------------
-# binning
+# Binning
 # -----------------------------------
 x = [1, 7, 5, 4, 6, 3]
 
-# pandasのcut関数でbinningを行う
+# Use pandas' cut function for binning
 
-# binの数を指定する場合
+# Case where you specify the number of bins
 binned = pd.cut(x, 3, labels=False)
 print(binned)
-# [0 2 1 1 2 0] - 変換された値は3つのbinのどれに入ったかを表す
+# [0 2 1 1 2 0] - shows which of the three bins the converted values are in
 
-# binの範囲を指定する場合（3.0以下、3.0より大きく5.0以下、5.0より大きい）
+# Case where you specify the bin ranges (<3.0, 3.0->5.0, >5.0）
 bin_edges = [-float('inf'), 3.0, 5.0, float('inf')]
 binned = pd.cut(x, bin_edges, labels=False)
 print(binned)
-# [0 2 1 1 2 0] - 変換された値は3つのbinのどれに入ったかを表す
+# [0 2 1 1 2 0] - shows which of the three bins the converted values are in
 
 # -----------------------------------
-# 順位への変換
+# Rank transformation
 # -----------------------------------
 x = [10, 20, 30, 0, 40, 40]
 
-# pandasのrank関数で順位に変換する
+# Use pandas' rank function for rank transformation
 rank = pd.Series(x).rank()
 print(rank.values)
-# はじまりが1、同順位があった場合は平均の順位となる
+# First value is 1, mean rank is given for values in equal position
 # [2. 3. 4. 1. 5.5 5.5]
 
-# numpyのargsort関数を2回適用する方法で順位に変換する
+# Also possible to to apply numpy's argsort function twice to make rank transformation
 order = np.argsort(x)
 rank = np.argsort(order)
 print(rank)
-# はじまりが0、同順位があった場合はどちらかが上位となる
+# First value is zero, equal position values are ordered by whichever is first
 # [1 2 3 0 4 5]
 
 # -----------------------------------
 # RankGauss
 # -----------------------------------
-# データの読み込み
+# Load the data
 train_x, test_x = load_data()
 # -----------------------------------
 from sklearn.preprocessing import QuantileTransformer
 
-# 学習データに基づいて複数列のRankGaussによる変換を定義
+# Compute parameters for Rank-Gauss transformation for multiple columns of the training data
 transformer = QuantileTransformer(n_quantiles=100, random_state=0, output_distribution='normal')
 transformer.fit(train_x[num_cols])
 
-# 変換後のデータで各列を置換
+# Replace columns with transformed data
 train_x[num_cols] = transformer.transform(train_x[num_cols])
 test_x[num_cols] = transformer.transform(test_x[num_cols])
