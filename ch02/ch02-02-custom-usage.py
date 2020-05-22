@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 # train_x is the training data, train_y contains the target values, test_x is the test data
-# These are saved in pandas DataFrames and Series. (numpy arrays are also used)
+# stored in pandas DataFrames and Series (numpy arrays also used)
 
 train = pd.read_csv('../input/sample-data/train_preprocessed.csv')
 train_x = train.drop(['target'], axis=1)
@@ -30,7 +30,7 @@ from sklearn.metrics import log_loss
 
 
 # Convert features and target values into xgboost data structure
-# Test features and target values are tr_x, tr_x, validation features and target valuesva_x, va_y
+# Test features and target values are tr_x, tr_x, validation features and target values va_x, va_y
 dtrain = xgb.DMatrix(tr_x, label=tr_y)
 dvalid = xgb.DMatrix(va_x, label=va_y)
 

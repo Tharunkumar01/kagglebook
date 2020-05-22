@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 # train_x is the training data, train_y contains the target values, test_x is the test data
-# These are saved in pandas DataFrames and Series. (numpy arrays are also used)
+# stored in pandas DataFrames and Series (numpy arrays also used)
 
 train = pd.read_csv('../input/sample-data/train.csv')
 train_x = train.drop(['target'], axis=1)
@@ -188,7 +188,7 @@ for i, (tr_idx, va_idx) in enumerate(kf.split(train_x)):
     # Remember to save the encoded features so you can come back and read the data later if necessary
 
 # -----------------------------------
-# Target encoding - when the cross validationand target encoded folds need to be partitioned
+# Target encoding - when the cross validation and target encoded folds need to be partitioned
 # -----------------------------------
 # Load the data
 train_x, test_x = load_data()
@@ -208,7 +208,7 @@ for c in cat_cols:
 
     # Split off the cross validation 
     for i, (tr_idx, va_idx) in enumerate(kf.split(train_x)):
-        # Calculate the average of the target values for each catergory for the training data
+        # Calculate the average of the target values for each category for the training data
         target_mean = data_tmp.iloc[tr_idx].groupby(c)['target'].mean()
         # For the validation data, store the converted values temporarily in an array
         tmp[va_idx] = train_x[c].iloc[va_idx].map(target_mean)

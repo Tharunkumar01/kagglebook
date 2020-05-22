@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 # train_x is the training data, train_y is the target values, and test_x is the test data
-# stored in pandas DataFrames and Series (also possible to use numpy arrays)）
+# stored in pandas DataFrames and Series (numpy arrays also used)
 
 train = pd.read_csv('../input/sample-data/train_preprocessed.csv')
 train_x = train.drop(['target'], axis=1)
@@ -60,5 +60,5 @@ watchlist = [(dtrain, 'train'), (dvalid, 'eval')]
 model = xgb.train(params, dtrain, num_round, evals=watchlist,
                   early_stopping_rounds=20)
 
-# Use the optimial decision tree to make predictions
+# Use the optimal decision tree to make predictions
 pred = model.predict(dtest, ntree_limit=model.best_ntree_limit)

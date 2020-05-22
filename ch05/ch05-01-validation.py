@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 # train_x is the training data, train_y is the target values, and test_x is the test data
-# stored in pandas DataFrames and Series (also possible to use numpy arrays)
+# stored in pandas DataFrames and Series (numpy arrays also used)
 
 train = pd.read_csv('../input/sample-data/train_preprocessed.csv')
 train_x = train.drop(['target'], axis=1)
@@ -76,7 +76,7 @@ print(score)
 
 from sklearn.model_selection import KFold
 
-# Use KFold class to parition for hold-out method
+# Use KFold class to partition for hold-out method
 kf = KFold(n_splits=4, shuffle=True, random_state=71)
 tr_idx, va_idx = list(kf.split(train_x))[0]
 tr_x, va_x = train_x.iloc[tr_idx], train_x.iloc[va_idx]
@@ -85,18 +85,18 @@ tr_y, va_y = train_y.iloc[tr_idx], train_y.iloc[va_idx]
 # -----------------------------------
 # Cross validation
 # -----------------------------------
-# Partition data for cross-validation
+# Partition data for cross validation
 
 from sklearn.model_selection import KFold
 
-# Use KFold class for partitioning for cross-valdiation
+# Use KFold class for partitioning for cross validation
 kf = KFold(n_splits=4, shuffle=True, random_state=71)
 for tr_idx, va_idx in kf.split(train_x):
     tr_x, va_x = train_x.iloc[tr_idx], train_x.iloc[va_idx]
     tr_y, va_y = train_y.iloc[tr_idx], train_y.iloc[va_idx]
 
 # -----------------------------------
-# Perform cross-validation
+# Perform cross validation
 
 from sklearn.metrics import log_loss
 from sklearn.model_selection import KFold
@@ -106,7 +106,7 @@ from sklearn.model_selection import KFold
 
 scores = []
 
-# Use KFold class for partitioning for cross-valdiation
+# Use KFold class for partitioning for cross validation
 kf = KFold(n_splits=4, shuffle=True, random_state=71)
 for tr_idx, va_idx in kf.split(train_x):
     tr_x, va_x = train_x.iloc[tr_idx], train_x.iloc[va_idx]
@@ -150,7 +150,7 @@ unique_user_ids = user_id.unique()
 scores = []
 kf = KFold(n_splits=4, shuffle=True, random_state=71)
 for tr_group_idx, va_group_idx in kf.split(unique_user_ids):
-    # Parition using the customer ID (into data for training and validation)
+    # Partition using the customer ID (into data for training and validation)
     tr_groups, va_groups = unique_user_ids[tr_group_idx], unique_user_ids[va_group_idx]
 
     # Partition records based on whether the customer ID is in train/valid

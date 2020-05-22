@@ -119,9 +119,9 @@ class Generator:
         app_year, app_month, app_day = app_date.year, app_date.month, app_date.day
         application_date = '{}/{}/{}'.format(app_year, app_month, app_day)
 
-        # Medical inofrmation
-        # Set scores based on a1, difference between a1 and a2, and when a3 is greater than or equalt to 5
-        # bはスコアが無い
+        # Medical information
+        # Set scores based on a1, difference between a1 and a2, and when a3 is greater than or equal to 5
+        # No score for b
         medical_info_a1 = int(250.0 + 100.0 * self.r.rand() + 100.0 * self.r.randn())
         medical_info_a2 = int(200.0 + 100.0 * self.r.rand() + 100.0 * self.r.randn())
         medical_info_a3 = self.r.poisson(lam=2)
