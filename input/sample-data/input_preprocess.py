@@ -44,7 +44,7 @@ test.to_csv('test_preprocessed.csv', index=False)
 # ----------------------
 # Preprocessing for neural network and linear models
 
-# 欠損値の補完
+# Impute missing values
 has_nan_features = ['medical_info_c1', 'medical_info_c2']
 for c in has_nan_features:
     df[f'{c}_nan'] = df[c].isnull()

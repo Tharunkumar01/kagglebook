@@ -1,6 +1,6 @@
 ## Overview
 
-This is an English translation of the sample code that accompaines the bestselling Japanese Kaggle book "Data Analysis Techniques to Win Kaggle" ([Amazon Japan](https://www.amazon.co.jp/dp/4297108437)). 
+This is an English translation of the sample code that accompanies the bestselling Japanese Kaggle book "Data Analysis Techniques to Win Kaggle" ([Amazon Japan](https://www.amazon.co.jp/dp/4297108437)). 
 The book was written by Daisuke Kadowaki ([threecourse](https://www.kaggle.com/threecourse)), Ryuji Sakata ([Jack](https://www.kaggle.com/rsakata)), Keisuke Hosaka ([hskksk](https://www.kaggle.com/hskksk)) and Yuji Hiramatsu ([maxwell](https://www.kaggle.com/maxwell110)). 
 It was first published on 9 October 2019 by Gijutsu-Hyohron Co., Ltd (ISBN-13: 978-4297108434).
 
@@ -20,7 +20,7 @@ Book cover:
 | ch05 | Sample code for chapter 5 |
 | ch06 | Sample code for chapter 6 |
 | ch07 | Sample code for chapter 7 |
-| ch04-model-interface | Code for the classes and folder structure composition for competitions discussed in chapter 4 |
+| ch04-model-interface | Code for "class and directory structures for competitions" section of chapter 4 |
 
 * Execute code with the each chapter folder directory as the current directory.
 * For chapter 1, download the titanic data first as described in [input/readme.md](input/readme.md).

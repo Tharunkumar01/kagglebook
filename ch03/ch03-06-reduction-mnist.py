@@ -41,7 +41,7 @@ plt.show()
 # -----------------------------------
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 
-# Derive the 2 axes that best split the classes using linear discriminat analysis
+# Derive the 2 axes that best split the classes using linear discriminant analysis
 lda = LDA(n_components=2)
 x_lda = lda.fit_transform(train_x, train_y)
 

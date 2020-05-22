@@ -51,7 +51,7 @@ df_wide = df_long.pivot(index=None, columns='id', values='value')
 # Set data to wide format
 x = df_wide
 # -----------------------------------
-# x is the wide format dataframe
+# x is the wide format data frame
 # The index is the date or timestamp, assume the columns store data of interest such as sales etc. for users or stores
 # Create lag data for one period ago
 x_lag1 = x.shift(1)
@@ -85,17 +85,17 @@ train_x['date'] = pd.to_datetime(train_x['date'])
 event_history['date'] = pd.to_datetime(event_history['date'])
 # -----------------------------------
 
-# train_x is training data in a dataframe with columns for user id and date
-# event_history contains data from past events in a dataframe with date and event columns
+# train_x is training data in a data frame with columns for user id and date
+# event_history contains data from past events in a data frame with date and event columns
 
-# occurrences is a dataframe with columns for date and whether a sale was made or not
+# occurrences is a data frame with columns for date and whether a sale was made or not
 dates = np.sort(train_x['date'].unique())
 occurrences = pd.DataFrame(dates, columns=['date'])
 sale_history = event_history[event_history['event'] == 'sale']
 occurrences['sale'] = occurrences['date'].isin(sale_history['date'])
 
-# Take cumulative sums to calculate to number of occurances on each date
-# occurrences is now a dataframe with columns for date and cummulative number of sales on that date
+# Take cumulative sums to calculate to number of occurrences on each date
+# occurrences is now a data frame with columns for date and cumulative number of sales on that date
 occurrences['sale'] = occurrences['sale'].cumsum()
 
 # Using the timestamp as a key, combine with the training dataset

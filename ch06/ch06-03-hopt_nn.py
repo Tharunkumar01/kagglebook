@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 # train_x is the training data, train_y is the target values, and test_x is the test data
-# stored in pandas DataFrames and Series (numpy arrays also used as well)
+# stored in pandas DataFrames and Series (numpy arrays also used)
 
 train = pd.read_csv('../input/sample-data/train_preprocessed_onehot.csv')
 train_x = train.drop(['target'], axis=1)
@@ -20,7 +20,7 @@ tr_idx, va_idx = list(kf.split(train_x))[0]
 tr_x, va_x = train_x.iloc[tr_idx], train_x.iloc[va_idx]
 tr_y, va_y = train_y.iloc[tr_idx], train_y.iloc[va_idx]
 
-# Suppess tensorflow warnings
+# Suppress tensorflow warnings
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 import tensorflow as tf

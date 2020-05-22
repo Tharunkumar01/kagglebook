@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 # train_x is the training data, train_y is the target values, and test_x is the test data
-# stored in pandas DataFrames and Series (also possible to use numpy arrays)）
+# stored in pandas DataFrames and Series (numpy arrays also used)
 # Load one-hot encoded data
 
 train = pd.read_csv('../input/sample-data/train_preprocessed_onehot.csv')
@@ -39,7 +39,7 @@ model = LogisticRegression(C=1.0)
 model.fit(tr_x, tr_y)
 
 # Check score for validation data
-# Use predict_proba to output probabilities. (predict outputs binary class predicitons)
+# Use predict_proba to output probabilities. (predict outputs binary class predictions)
 va_pred = model.predict_proba(va_x)
 score = log_loss(va_y, va_pred)
 print(f'logloss: {score:.4f}')

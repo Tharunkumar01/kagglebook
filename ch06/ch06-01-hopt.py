@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 # train_x is the training data, train_y is the target values, and test_x is the test data
-# stored in pandas DataFrames and Series (numpy arrays also used as well)
+# stored in pandas DataFrames and Series (numpy arrays also used)
 
 train = pd.read_csv('../input/sample-data/train_preprocessed.csv')
 train_x = train.drop(['target'], axis=1)
@@ -54,7 +54,7 @@ class Model:
 # hp.choice: select from multiple options
 # hp.uniform: select uniformly from distribution between minimum and maximum bounds. Arguments are minimum and maximum bounds.
 # hp.quniform: select uniformly at points at fixed intervals within minimum and maximum bounds. Arguments are minimum and maximum bounds and interval width.
-# hp.loguniform: select from distribution so logarithm of returned values is uniformaly distributed. Arguments are logarithm of minimum and maximum bounds.
+# hp.loguniform: select from distribution so logarithm of returned values is uniformly distributed. Arguments are logarithm of minimum and maximum bounds.
 
 from hyperopt import hp
 
@@ -73,41 +73,41 @@ from sklearn.metrics import log_loss
 
 
 def score(params):
-    # パラメータを与えたときに最小化する評価指標を指定する
-    # 具体的には、モデルにパラメータを指定して学習・予測させた場合のスコアを返すようにする
+    # When specifying the parameters also specify a metric to minimize
+    # To be more specific, specify the parameters, then return score for predictions from trained model
 
-    # max_depthの型を整数型に修正する
+    # Convert max_depth to integer
     params['max_depth'] = int(params['max_depth'])
 
-    # Modelクラスを定義しているものとする
-    # Modelクラスは、fitで学習し、predictで予測値の確率を出力する
+    # Assume Model has been specified
+    # The Model class function fit() performs training, and predict() outputs predicted probabilities
     model = Model(params)
     model.fit(tr_x, tr_y, va_x, va_y)
     va_pred = model.predict(va_x)
     score = log_loss(va_y, va_pred)
     print(f'params: {params}, logloss: {score:.4f}')
 
-    # 情報を記録しておく
+    # Save the information
     history.append((params, score))
 
     return {'loss': score, 'status': STATUS_OK}
 
 
-# 探索するパラメータの空間を指定する
+# Specify parameter space to search
 space = {
     'min_child_weight': hp.quniform('min_child_weight', 1, 5, 1),
     'max_depth': hp.quniform('max_depth', 3, 9, 1),
     'gamma': hp.quniform('gamma', 0, 0.4, 0.1),
 }
 
-# hyperoptによるパラメータ探索の実行
+# Use hyperopt for parameter search
 max_evals = 10
 trials = Trials()
 history = []
 fmin(score, space, algo=tpe.suggest, trials=trials, max_evals=max_evals)
 
-# 記録した情報からパラメータとスコアを出力する
-# （trialsからも情報が取得できるが、パラメータの取得がやや行いづらいため）
+# Use recorded information to output parameter and score
+# (trials provides some information, but using it to obtain parameters is difficult in practice)
 history = sorted(history, key=lambda tpl: tpl[1])
 best = history[0]
 print(f'best params:{best[0]}, score:{best[1]:.4f}')

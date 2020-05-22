@@ -2,17 +2,17 @@ import numpy as np
 import pandas as pd
 
 # -----------------------------------
-# Load the training and test datasets
+# Load the training and test data
 # -----------------------------------
-# Load the training and test datasets
+# Load the training and test data
 train = pd.read_csv('../input/ch01-titanic/train.csv')
 test = pd.read_csv('../input/ch01-titanic/test.csv')
 
-# Split the training dataset into features and target values
+# Split the training data into features and target values
 train_x = train.drop(['Survived'], axis=1)
 train_y = train['Survived']
 
-# The test dataset only contains features, so is ok to use as it
+# The test data only contains features, so is ok to use as it
 test_x = test.copy()
 
 # -----------------------------------
