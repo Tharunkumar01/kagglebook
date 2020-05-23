@@ -53,7 +53,7 @@ class Model:
 # -----------------------------------
 # hp.choice: select from multiple options
 # hp.uniform: select uniformly from distribution between minimum and maximum bounds. Arguments are minimum and maximum bounds.
-# hp.quniform: select uniformly at points at fixed intervals within minimum and maximum bounds. Arguments are minimum and maximum bounds and interval width.
+# hp.quniform: select uniformly at points separated by fixed intervals within minimum and maximum bounds. Arguments are minimum and maximum bounds and interval width.
 # hp.loguniform: select from distribution so logarithm of returned values is uniformly distributed. Arguments are logarithm of minimum and maximum bounds.
 
 from hyperopt import hp
@@ -79,7 +79,7 @@ def score(params):
     # Convert max_depth to integer
     params['max_depth'] = int(params['max_depth'])
 
-    # Assume Model has been specified
+    # Assume Model has already been defined
     # The Model class function fit() performs training, and predict() outputs predicted probabilities
     model = Model(params)
     model.fit(tr_x, tr_y, va_x, va_y)

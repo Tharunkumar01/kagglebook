@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 # train_x is the training data, train_y contains the target values, test_x is the test data
-# These are saved in pandas DataFrames and Series. (numpy arrays are also used)
+# stored in pandas DataFrames and Series (numpy arrays also used)
 
 train = pd.read_csv('../input/sample-data/train_preprocessed.csv')
 train_x = train.drop(['target'], axis=1)
@@ -158,7 +158,7 @@ test_x[num_cols] = test_x[num_cols].clip(p01, p99, axis=1)
 # -----------------------------------
 x = [1, 7, 5, 4, 6, 3]
 
-# Use pandas' cut function for binning
+# Use cut() function in pandas for binning
 
 # Case where you specify the number of bins
 binned = pd.cut(x, 3, labels=False)
@@ -176,13 +176,13 @@ print(binned)
 # -----------------------------------
 x = [10, 20, 30, 0, 40, 40]
 
-# Use pandas' rank function for rank transformation
+# Use rank() function in pandas for rank transformation
 rank = pd.Series(x).rank()
 print(rank.values)
 # First value is 1, mean rank is given for values in equal position
 # [2. 3. 4. 1. 5.5 5.5]
 
-# Also possible to to apply numpy's argsort function twice to make rank transformation
+# Also possible to to apply argsort() function in numpy twice to make rank transformation
 order = np.argsort(x)
 rank = np.argsort(order)
 print(rank)

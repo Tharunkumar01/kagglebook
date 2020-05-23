@@ -13,7 +13,7 @@ from sklearn.preprocessing import StandardScaler
 from model import Model
 from util import Util
 
-# Supress tensorflow warnings
+# Suppress tensorflow warnings
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 import tensorflow as tf

@@ -51,7 +51,7 @@ if __name__ == '__main__':
     Submission.create_submission('nn1')
 
     '''
-    # (For reference) Train and predict using xgboost using all training data
+    # (For reference) Train and predict using xgboost on all training data
     runner = Runner('xgb1-train-all', ModelXGB, features, params_xgb_all)
     runner.run_train_all()
     runner.run_test_all()

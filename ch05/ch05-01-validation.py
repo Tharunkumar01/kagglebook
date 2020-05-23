@@ -60,7 +60,7 @@ from sklearn.model_selection import train_test_split
 # Assume Model class has been predefined
 # Model class performs fitting and returns predicted probabilities for each outcome
 
-# Use train_test_split function for partitioning
+# Use train_test_split() function for partitioning
 tr_x, va_x, tr_y, va_y = train_test_split(train_x, train_y,
                                           test_size=0.25, random_state=71, shuffle=True)
 

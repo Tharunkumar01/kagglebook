@@ -6,7 +6,7 @@
 
 * Input data for sample code after chapter 2
 * Use data from Kaggle competition [Prudential Life Insurance Assessment](https://www.kaggle.com/c/prudential-life-insurance-assessment)
-as a reference. Data was artificially made to simulate insurance underwriting data. The data construction was simple, so its structure is simpler than real life data.
+as a reference. Data was made artificially to simulate insurance underwriting data. The data construction was simple, so its structure is simpler than real life data.
 * Total of training and test data is 10000 lines
 
 #### Sample data items

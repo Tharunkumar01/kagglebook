@@ -7,7 +7,7 @@ import pandas as pd
 from sklearn.metrics import f1_score
 from scipy.optimize import minimize
 
-# Prepartion for sample data creation
+# Prepartions for creating sample data
 rand = np.random.RandomState(seed=71)
 train_y_prob = np.linspace(0, 1.0, 10000)
 

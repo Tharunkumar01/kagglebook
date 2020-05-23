@@ -39,7 +39,7 @@ model = LogisticRegression(C=1.0)
 model.fit(tr_x, tr_y)
 
 # Check score for validation data
-# Use predict_proba to output probabilities. (predict outputs binary class predictions)
+# Use predict_proba() to output probabilities. (predict() outputs binary class predictions)
 va_pred = model.predict_proba(va_x)
 score = log_loss(va_y, va_pred)
 print(f'logloss: {score:.4f}')

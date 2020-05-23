@@ -13,9 +13,9 @@ train_y = train['target']
 test_x = pd.read_csv('../input/sample-data/test_preprocessed_onehot.csv')
 
 # ---------------------------------
-# Use argsort to do index sort
+# Use argsort() to do index sort
 # ---------------------------------
-# Arrays can be ordered using index sort into ascending and descending order with argsort
+# Arrays can be ordered using index sort into ascending and descending order with argsort()
 ary = np.array([10, 20, 30, 0])
 idx = ary.argsort()
 print(idx)  # Ascending order - [3 0 1 2]
@@ -43,7 +43,7 @@ for c in train_x.columns:
 corrs_sp = np.array(corrs_sp)
 
 # Output in order to top importance (maximum of top 5)
-# Using np.argsort, you can get the indices of the ordered values
+# Using np.argsort(), you can get the indices of the ordered values
 idx = np.argsort(np.abs(corrs))[::-1]
 top_cols, top_importances = train_x.columns.values[idx][:5], corrs[idx][:5]
 print(top_cols, top_importances)
