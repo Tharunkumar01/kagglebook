@@ -12,7 +12,7 @@ user_log = pd.read_csv('../input/ch03/multi_table_log.csv')
 # -----------------------------------
 # Suppose we have a data frame in the format shown in the diagram
 # train         : Training data (UserID, ProductID, Target value columns etc.)
-# product_master : Product data (ProductID, Product information columns etc.)
+# product_master: Product data (ProductID, Product information columns etc.)
 # user_log      : User actions log data (UserID, Columns recording user action data etc.)
 
 # Combine the product data and training data

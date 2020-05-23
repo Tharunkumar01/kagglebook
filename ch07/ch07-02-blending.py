@@ -30,7 +30,7 @@ tr_x, va_x = train_x.iloc[tr_idx], train_x.iloc[va_index]
 tr_y, va_y = train_y.iloc[tr_idx], train_y.iloc[va_index]
 tr_x_nn, va_x_nn = train_x_nn.iloc[tr_idx], train_x_nn.iloc[va_index]
 
-# Assume Model1_1, Model1_2 and Model2 are specified in models.py
+# Assume Model1_1, Model1_2 and Model2 are defined in models.py
 # For each class train using fit and output prediction probabilities using predict
 from models import Model1Xgb, Model1NN, Model2Linear
 

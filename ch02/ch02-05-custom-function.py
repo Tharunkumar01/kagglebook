@@ -3,7 +3,7 @@ import pandas as pd
 
 
 # -----------------------------------
-# Optimizing MAE by approximating metric with custom objective function
+# Optimizing MAE by approximating metric with a custom objective function
 # -----------------------------------
 
 # Fair function

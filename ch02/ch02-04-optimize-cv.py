@@ -8,7 +8,7 @@ from scipy.optimize import minimize
 from sklearn.metrics import f1_score
 from sklearn.model_selection import KFold
 
-# Prepartion for sample data creation
+# Prepartions for creating sample data
 rand = np.random.RandomState(seed=71)
 train_y_prob = np.linspace(0, 1.0, 10000)
 
@@ -16,7 +16,7 @@ train_y_prob = np.linspace(0, 1.0, 10000)
 train_y = pd.Series(rand.uniform(0.0, 1.0, train_y_prob.size) < train_y_prob)
 train_pred_prob = np.clip(train_y_prob * np.exp(rand.standard_normal(train_y_prob.shape) * 0.3), 0.0, 1.0)
 
-# Find thresholds using cross-validation framework
+# Find thresholds using cross validation framework
 thresholds = []
 scores_tr = []
 scores_va = []

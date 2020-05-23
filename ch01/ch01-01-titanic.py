@@ -12,7 +12,7 @@ test = pd.read_csv('../input/ch01-titanic/test.csv')
 train_x = train.drop(['Survived'], axis=1)
 train_y = train['Survived']
 
-# The test data only contains features, so is ok to use as it
+# The test data only contains features, so is ok as is
 test_x = test.copy()
 
 # -----------------------------------
@@ -47,7 +47,7 @@ from xgboost import XGBClassifier
 model = XGBClassifier(n_estimators=20, random_state=71)
 model.fit(train_x, train_y)
 
-# Output prediction probabilities for the test data
+# Output predicted probabilities for the test data
 pred = model.predict_proba(test_x)[:, 1]
 
 # Convert into binary predictions 
@@ -56,7 +56,7 @@ pred_label = np.where(pred > 0.5, 1, 0)
 # Create a submission file
 submission = pd.DataFrame({'PassengerId': test['PassengerId'], 'Survived': pred_label})
 submission.to_csv('submission_first.csv', index=False)
-# Score: 0.7799 (it is possible for this value to differ from the one in the book)
+# Score: 0.7799 (it is possible that this value differs from the one in the book)
 
 # -----------------------------------
 # Validation
@@ -72,7 +72,7 @@ scores_logloss = []
 # Split the training data into 4, use 1 part for validation, then use the next part for validation, and so on...
 kf = KFold(n_splits=4, shuffle=True, random_state=71)
 for tr_idx, va_idx in kf.split(train_x):
-    # Split the training data into training and validation sets
+    # Split the training data into training and validation data
     tr_x, va_x = train_x.iloc[tr_idx], train_x.iloc[va_idx]
     tr_y, va_y = train_y.iloc[tr_idx], train_y.iloc[va_idx]
 
@@ -80,7 +80,7 @@ for tr_idx, va_idx in kf.split(train_x):
     model = XGBClassifier(n_estimators=20, random_state=71)
     model.fit(tr_x, tr_y)
 
-    # Output prediction probabilities for the validation data
+    # Output predicted probabilities for the validation data
     va_pred = model.predict_proba(va_x)[:, 1]
 
     # Calculate scores for the validation data
@@ -95,7 +95,7 @@ for tr_idx, va_idx in kf.split(train_x):
 logloss = np.mean(scores_logloss)
 accuracy = np.mean(scores_accuracy)
 print(f'logloss: {logloss:.4f}, accuracy: {accuracy:.4f}')
-# logloss: 0.4270, accuracy: 0.8148 (it is possible for these value to be different from the book)
+# logloss: 0.4270, accuracy: 0.8148 (it is possible that these values differ from the book)
 
 # -----------------------------------
 # Model tuning
@@ -115,15 +115,15 @@ param_combinations = itertools.product(param_space['max_depth'], param_space['mi
 params = []
 scores = []
 
-# Perform cross-validation for each hyperparameter combination
+# Perform cross validation for each hyperparameter combination
 for max_depth, min_child_weight in param_combinations:
 
     score_folds = []
-    # Perform cross-validation
+    # Perform cross validation
     # Split the training data into 4, use 1 part for validation, then use the next part for validation, and so on...
     kf = KFold(n_splits=4, shuffle=True, random_state=123456)
     for tr_idx, va_idx in kf.split(train_x):
-        # Split the training data into training and validation sets
+        # Split the training data into training and validation data
         tr_x, va_x = train_x.iloc[tr_idx], train_x.iloc[va_idx]
         tr_y, va_y = train_y.iloc[tr_idx], train_y.iloc[va_idx]
 
@@ -132,7 +132,7 @@ for max_depth, min_child_weight in param_combinations:
                               max_depth=max_depth, min_child_weight=min_child_weight)
         model.fit(tr_x, tr_y)
 
-        # Output prediction probabilities for the validation data
+        # Output predicted probabilities for the validation data
         va_pred = model.predict_proba(va_x)[:, 1]
         logloss = log_loss(va_y, va_pred)
         score_folds.append(logloss)
@@ -144,7 +144,7 @@ for max_depth, min_child_weight in param_combinations:
     params.append((max_depth, min_child_weight))
     scores.append(score_mean)
 
-# Set the best parameters to those giving the highest score
+# Set the parameters to the best values giving the highest score
 best_idx = np.argsort(scores)[0]
 best_param = params[best_idx]
 print(f'max_depth: {best_param[0]}, min_child_weight: {best_param[1]}')
@@ -216,6 +216,6 @@ model_lr = LogisticRegression(solver='lbfgs', max_iter=300)
 model_lr.fit(train_x2, train_y)
 pred_lr = model_lr.predict_proba(test_x2)[:, 1]
 
-# Take a weighted average of the predicted values
+# Take a weighted average of the predictions
 pred = pred_xgb * 0.8 + pred_lr * 0.2
 pred_label = np.where(pred > 0.5, 1, 0)

@@ -23,7 +23,7 @@ print(rmse)
 
 from sklearn.metrics import confusion_matrix
 
-# True values and predicted values are binary classifiers: either 0 or 1
+# True values and predicted values are binary, i.e. either 0 or 1
 y_true = [1, 0, 1, 1, 0, 1, 1, 0]
 y_pred = [0, 0, 1, 1, 0, 0, 1, 1]
 
@@ -38,8 +38,8 @@ print(confusion_matrix1)
 # array([[3, 1],
 #        [2, 2]])
 
-# Can also be created using confusion_matrix() from scikit-learn's metrics, but
-# beware that the arrangement of the confusion matrix elements may be different
+# Can also be created using the confusion_matrix() function from scikit-learn's metrics, but
+# be aware that the arrangement of the confusion matrix elements may be different
 confusion_matrix2 = confusion_matrix(y_true, y_pred)
 print(confusion_matrix2)
 # array([[2, 1],
@@ -50,7 +50,7 @@ print(confusion_matrix2)
 
 from sklearn.metrics import accuracy_score
 
-# True values and predicted values are binary classifiers: either 0 or 1
+# True values and predicted values are binary, i.e. either 0 or 1
 y_true = [1, 0, 1, 1, 0, 1, 1, 0]
 y_pred = [0, 0, 1, 1, 0, 0, 1, 1]
 accuracy = accuracy_score(y_true, y_pred)
@@ -123,7 +123,7 @@ micro_f1 = f1_score(y_true.reshape(-1), y_pred.reshape(-1))
 print(mean_f1, macro_f1, micro_f1)
 # 0.5933, 0.5524, 0.6250
 
-# Can also be calculated using a scikit-learn method
+# Can also be calculated using a scikit-learn function
 mean_f1 = f1_score(y_true, y_pred, average='samples')
 macro_f1 = f1_score(y_true, y_pred, average='macro')
 micro_f1 = f1_score(y_true, y_pred, average='micro')
@@ -165,7 +165,7 @@ kappa = quadratic_weighted_kappa(c_matrix)
 print(kappa)
 # 0.6153
 
-# Can also be calculated using a scikit-learn method
+# Can also be calculated using a scikit-learn function
 kappa = cohen_kappa_score(y_true, y_pred, weights='quadratic')
 
 # -----------------------------------
@@ -210,7 +210,7 @@ def mapk(y_true, y_pred):
 print(mapk(y_true, y_pred))
 # 0.65
 
-# Even if the number of true values is the same, if the order is different then the score should be different
+# Even if the number of true values is the same, if the order is different then the score will be different
 print(apk(y_true[0], y_pred[0]))
 print(apk(y_true[1], y_pred[1]))
 # 1.0, 0.5833

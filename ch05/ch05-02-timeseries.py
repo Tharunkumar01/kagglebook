@@ -28,7 +28,7 @@ tr_x, va_x = train_x[is_tr], train_x[is_va]
 tr_y, va_y = train_y[is_tr], train_y[is_va]
 
 # -----------------------------------
-# Cross validation for time series data (use method that follows time)
+# Cross validation for time-series data (use method that follows time)
 # -----------------------------------
 # Partition using the period variable as the basis (0 to 3 are the training data, 4 is the test data)
 # Periods 1, 2 and 3 are each used for cross-validation, and the preceding periods are used for training
@@ -40,7 +40,7 @@ for va_period in va_period_list:
     tr_x, va_x = train_x[is_tr], train_x[is_va]
     tr_y, va_y = train_y[is_tr], train_y[is_va]
 
-# (For reference) Using TimeSeriesSplit function is difficult as only the order of the data can be used
+# (For reference) Using TimeSeriesSplit() function is difficult as only the order of the data can be used
 from sklearn.model_selection import TimeSeriesSplit
 
 tss = TimeSeriesSplit(n_splits=4)
@@ -49,7 +49,7 @@ for tr_idx, va_idx in tss.split(train_x):
     tr_y, va_y = train_y.iloc[tr_idx], train_y.iloc[va_idx]
 
 # -----------------------------------
-# Cross validation for time series data (method to simply partition by time)
+# Cross validation for time-series data (method to simply partition by time)
 # -----------------------------------
 # Partition using the period variable as the basis (0 to 3 are the training data, 4 is the test data)
 # Periods 1, 2 and 3 are each used for cross-validation, and the preceding periods are used for training

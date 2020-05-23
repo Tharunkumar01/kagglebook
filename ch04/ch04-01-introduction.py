@@ -45,7 +45,7 @@ class Model:
 params = {'param1': 10, 'param2': 100}
 
 # Define the Model class
-# The Model class has functions fit for training and predict for outputting predicted probabilities
+# The Model class has functions fit() for training and predict() for outputting predicted probabilities
 
 # Define the Model class
 model = Model(params)

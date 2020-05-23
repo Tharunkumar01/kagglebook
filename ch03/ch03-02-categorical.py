@@ -33,7 +33,7 @@ cat_cols = ['sex', 'product', 'medical_info_b2', 'medical_info_b3']
 train_x, test_x = load_data()
 # -----------------------------------
 
-# Concatenate the training and test datasets, and apply one-hot encoding via get_dummies
+# Concatenate the training and test datasets, and apply one-hot encoding via get_dummies()
 all_x = pd.concat([train_x, test_x])
 all_x = pd.get_dummies(all_x, columns=cat_cols)
 
@@ -47,7 +47,7 @@ train_x, test_x = load_data()
 # -----------------------------------
 from sklearn.preprocessing import OneHotEncoder
 
-# Encoding with the OneHotEncoder function
+# Encoding with the OneHotEncoder() function
 ohe = OneHotEncoder(sparse=False, categories='auto')
 ohe.fit(train_x[cat_cols])
 
@@ -56,7 +56,7 @@ columns = []
 for i, c in enumerate(cat_cols):
     columns += [f'{c}_{v}' for v in ohe.categories_[i]]
 
-# Put the created dummy variables into data frames
+# Put created dummy variables into data frames
 dummy_vals_train = pd.DataFrame(ohe.transform(train_x[cat_cols]), columns=columns)
 dummy_vals_test = pd.DataFrame(ohe.transform(test_x[cat_cols]), columns=columns)
 
@@ -90,10 +90,10 @@ from sklearn.feature_extraction import FeatureHasher
 
 # Loop over the categorical variables and apply feature hashing
 for c in cat_cols:
-    # Using the FeatureHasher function is slightly different from other encoders
+    # Using the FeatureHasher() function is slightly different from other encoders
 
     fh = FeatureHasher(n_features=5, input_type='string')
-    # Convert the variable to a string and apply the FeatureHasher
+    # Convert the variable to a string and apply the FeatureHasher() function
     hash_train = fh.transform(train_x[[c]].astype(str).values)
     hash_test = fh.transform(test_x[[c]].astype(str).values)
     # Add to a data frame

@@ -53,6 +53,7 @@ x = df_wide
 # -----------------------------------
 # x is the wide format data frame
 # The index is the date or timestamp, assume the columns store data of interest such as sales etc. for users or stores
+
 # Create lag data for one period ago
 x_lag1 = x.shift(1)
 

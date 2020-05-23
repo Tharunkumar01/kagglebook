@@ -17,7 +17,7 @@ from sklearn.model_selection import KFold
 kf = KFold(n_splits=4, shuffle=True, random_state=71)
 tr_idx, va_idx = list(kf.split(train_x))[0]
 
-# Split the training data into training and validation portions
+# Split the training data into training and validation data
 tr_x, va_x = train_x.iloc[tr_idx], train_x.iloc[va_idx]
 tr_y, va_y = train_y.iloc[tr_idx], train_y.iloc[va_idx]
 
@@ -27,7 +27,6 @@ tr_y, va_y = train_y.iloc[tr_idx], train_y.iloc[va_idx]
 # -----------------------------------
 import xgboost as xgb
 from sklearn.metrics import log_loss
-
 
 # Convert features and target values into xgboost data structure
 # Test features and target values are tr_x, tr_x, validation features and target values va_x, va_y
@@ -50,16 +49,16 @@ def evalerror(preds, dtrain):
     return 'custom-error', float(sum(labels != (preds > 0.0))) / len(labels)
 
 
-# Hyperparameter setting
+# Set hyperparameters
 params = {'silent': 1, 'random_state': 71}
 num_round = 50
 watchlist = [(dtrain, 'train'), (dvalid, 'eval')]
 
-# Model training
+# Train the model
 bst = xgb.train(params, dtrain, num_round, watchlist, obj=logregobj, feval=evalerror)
 
 # Unlike when binary:logistic is specified as the objective function,
-# as the values outputted are not probabilities they need to be converted
+# the values outputted are not probabilities so they need to be converted
 pred_val = bst.predict(dvalid)
 pred = 1.0 / (1.0 + np.exp(-pred_val))
 logloss = log_loss(va_y, pred)

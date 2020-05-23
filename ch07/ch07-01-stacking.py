@@ -24,7 +24,7 @@ test_x_nn = pd.read_csv('../input/sample-data/test_preprocessed_onehot.csv')
 from sklearn.metrics import log_loss
 from sklearn.model_selection import KFold
 
-# Assume Model1Xgb, Model1NN and Model2Linear are specified in models.py
+# Assume Model1Xgb, Model1NN and Model2Linear are defined in models.py
 # For each class train using fit and output prediction probabilities using predict
 
 from models import Model1Xgb, Model1NN, Model2Linear
